@@ -46,24 +46,34 @@ function Profile() {
   };
 
   const handleSignOut = async () => {
+    console.log('Initiating sign-out...');
     try {
       dispatch(signInStart());
-      const res = await axios.post('http://localhost:3000/api/auth/sign-out', {}, {
+      console.log('Making sign-out request to /api/auth/sign-out');
+      const res = await axios.post('/api/profile/sign-out', {}, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
         }
       });
   
+      console.log('Sign-out response:', res);
+  
       if (res.status === 200) {
+        console.log('Sign-out successful, clearing state...');
         dispatch(signOut());
         persistor.purge();
         navigate('/sign-in');
       }
     } catch (error) {
-      console.error('Error during sign out:', error);
-      // If the error is 401 (Unauthorized) or 403 (Forbidden), sign out anyway
+      console.error('Sign-out error details:', {
+        message: error.message,
+        response: error.response,
+        status: error.response?.status
+      });
+      
       if (error.response?.status === 401 || error.response?.status === 403) {
+        console.log('Unauthorized/Forbidden error, forcing sign-out...');
         dispatch(signOut());
         persistor.purge();
         navigate('/sign-in');
@@ -78,7 +88,7 @@ function Profile() {
   
     try {
       dispatch(signInStart());
-      const res = await axios.delete(`http://localhost:3000/api/auth/delete/${currentUser._id}`, {
+      const res = await axios.delete(`/api/profile/delete/${currentUser._id}`, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
@@ -142,7 +152,7 @@ function Profile() {
         };
       }
   
-      const res = await axios.put("http://localhost:3000/api/profile/update", updatedUser, {
+      const res = await axios.put("http://localhost:5173/api/profile/update", updatedUser, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'

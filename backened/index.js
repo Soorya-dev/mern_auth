@@ -20,29 +20,47 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
-  credentials: true, // Allow credentials
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'], // Allowed headers
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(3000, ()=>{
-    console.log('server is running on port NO 3000');
+// Add a test route to verify API is working
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working' });
 });
 
+// Mount routes
 app.use('/api/profile', userRouter);
 app.use('/api/auth', userAuthRouter);
 
+// Error handling middleware
 app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
+  console.error(err.stack);
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  return res.status(statusCode).json({
+    success: false,
+    message,
+    statusCode
+  });
+});
 
-    return res.status(statusCode).json({
-        success: false,
-        message,
-        statusCode
-    });
+// 404 handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Not Found - ${req.method} ${req.url}`,
+    statusCode: 404
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
