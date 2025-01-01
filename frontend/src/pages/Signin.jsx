@@ -1,28 +1,30 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
-    setError('');
+    
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
+      dispatch(signInFailure('Sign-in failed. Please check your credentials.'));
       return;
     }
 
     try {
-      setLoading(true);
-      setError('');
+      dispatch(signInStart());
       
       // Using the Vite proxy configuration
       const res = await fetch('/api/auth/signin', {
@@ -40,17 +42,16 @@ export default function SignIn() {
       }
 
       const data = await res.json();
-      setLoading(false);
+      
 
       if (data.success === false) {
-        setError(data.message || 'Something went wrong');
+        dispatch(signInFailure(data));
         return;
       }
-
+      dispatch(signInSuccess(data));
       navigate('/');
     } catch (error) {
-      setLoading(false);
-      setError(error.message || 'Server error. Please try again later.');
+     dispatch(signInFailure(error));
       console.error('Signin error:', error);
     }
   };
@@ -86,7 +87,8 @@ export default function SignIn() {
           <span className='text-blue-500'>Sign up</span>
         </Link>
       </div>
-      {error && <p className='text-red-700 mt-5'>{error}</p>}
+       <p className='text-red-700 mt-5'>
+        {error?error.message || 'Failed to sign in':''}</p>
     </div>
   );
 }
