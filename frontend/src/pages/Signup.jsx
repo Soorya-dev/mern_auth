@@ -162,7 +162,7 @@ function SignUp() {
         </Link>
       </div>
 
-      <p className="text-red-700 mt-4">{error && "Something went wrong...!"}</p>
+      <p className="text-red-700 mt-4">{error && "Something went wrong...!,Please check is user already exists"}</p>
     </div>
   );
 }

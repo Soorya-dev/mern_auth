@@ -16,13 +16,18 @@ mongoose.connect(process.env.MONGODB_URI)
     console.error('Database connection failed:', error);
   });
 
- 
-
 const app = express();   
+
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:5173', // Your frontend URL
+  credentials: true, // Allow credentials
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'], // Allowed headers
+}));
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
 
 app.listen(3000, ()=>{
     console.log('server is running on port NO 3000');
@@ -30,7 +35,6 @@ app.listen(3000, ()=>{
 
 app.use('/api/profile', userRouter);
 app.use('/api/auth', userAuthRouter);
-
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
