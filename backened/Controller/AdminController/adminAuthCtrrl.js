@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../../Utils/error.js";
-import User from "../../Models/UserModels/userModel.js";
+import User from "../../Models/userModel.js";
 
 export const adminSignIn = async (req, res, next) => {
     try {

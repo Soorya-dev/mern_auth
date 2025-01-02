@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRouter from './Routes/UserRoutes/userRoutes.js';
 import userAuthRouter from './Routes/UserRoutes/userAuthRoute.js';
+import adminRouter from './Routes/AdminRoutes/adminAuthRoute.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -37,6 +38,7 @@ app.get('/api/test', (req, res) => {
 // Mount routes
 app.use('/api/profile', userRouter);
 app.use('/api/auth', userAuthRouter);
+app.use('/api/admin',adminRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

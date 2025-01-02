@@ -151,7 +151,7 @@ function Profile() {
           profilePicture: currentUser?.profilePicture || null,
         };
       }
-  
+  console.log("fyuhsdfuyjhdhgfjuyhsdhgfjudsyhffd", updatedUser);
       const res = await axios.put("http://localhost:5173/api/profile/update", updatedUser, {
         withCredentials: true,
         headers: {
@@ -240,17 +240,29 @@ function Profile() {
         {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
 
         <button
+          type="button"
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-85 disabled:opacity-65"
+          disabled={!isFormValid || uploadProgress > 0}
+          onClick={handleUpdate}
+        >
+          Update
+        </button>
+      </form>
+
+      <div className="flex justify-between mt-5">
+        <button
+          className="text-red-700 cursor-pointer"
+          onClick={handleDeleteAccount}
+        >
+          Delete Account
+        </button>
+
+        <button
           className="text-red-700 cursor-pointer"
           onClick={handleSignOut}
         >
           Sign Out
         </button>
-      </form>
-
-      <div className="flex justify-between mt-5">
-        
-
-       
       </div>
     </div>
   );

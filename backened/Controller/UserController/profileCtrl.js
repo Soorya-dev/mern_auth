@@ -45,6 +45,8 @@ export const signOut = async (req, res, next) => {
 // profileCtrl.js - Update the existing updateProfile function to handle errors better
 export const updateProfile = async (req, res, next) => {
   try {
+    console.log("Updating profile...");
+    
     const { userName, email, profilePicture, password, _id } = req.body;
 
     // Validate user exists
